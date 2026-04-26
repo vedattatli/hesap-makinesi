@@ -33,6 +33,7 @@ migrate_working_dir/
 /build/
 /coverage/
 /artifacts/
+/.gradle/
 
 # Symbolication related
 app.*.symbols
@@ -44,3 +45,17 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android signing secrets must stay local.
+key.properties
+/android/key.properties
+upload-keystore.jks
+**/*.keystore
+**/*.jks
+
+# iOS signing and export secrets must stay local.
+*.mobileprovision
+*.provisionprofile
+*.p12
+*.cer
+/ios/ExportOptions.plist

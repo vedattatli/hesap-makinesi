@@ -1,0 +1,8 @@
+# Copy this file to android/key.properties and fill in local-only secrets.
+# Do not commit android/key.properties or keystore files.
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=upload
+# Windows paths need escaped backslashes, for example:
+# storeFile=C:\\Users\\USERNAME\\upload-keystore.jks
+storeFile=C:\\Users\\USERNAME\\upload-keystore.jks
