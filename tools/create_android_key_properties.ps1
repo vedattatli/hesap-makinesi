@@ -45,6 +45,14 @@ $content = @(
     "storeFile=$escapedStoreFile"
 ) -join [Environment]::NewLine
 
-Set-Content -LiteralPath $OutputPath -Value $content -NoNewline -Encoding UTF8
+$outputFullPath = [System.IO.Path]::GetFullPath($OutputPath)
+$outputDirectory = [System.IO.Path]::GetDirectoryName($outputFullPath)
+if (-not [string]::IsNullOrWhiteSpace($outputDirectory) -and -not (Test-Path -LiteralPath $outputDirectory)) {
+    New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
+}
+
+$utf8NoBom = New-Object System.Text.UTF8Encoding -ArgumentList $false
+[System.IO.File]::WriteAllText($outputFullPath, $content, $utf8NoBom)
+
 Write-Host "Wrote local Android signing properties to $OutputPath"
 Write-Host "Do not commit this file. It is ignored by git."

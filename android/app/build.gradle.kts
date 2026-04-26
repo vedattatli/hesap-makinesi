@@ -21,7 +21,15 @@ if (releaseTaskRequested && !hasReleaseSigning) {
     )
 }
 if (hasReleaseSigning) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    val rawKeystoreProperties = Properties()
+    FileInputStream(keystorePropertiesFile).use { input ->
+        rawKeystoreProperties.load(input.reader(Charsets.UTF_8))
+    }
+    rawKeystoreProperties.forEach { key, value ->
+        val normalizedKey = key.toString().removePrefix("\uFEFF").trim()
+        keystoreProperties[normalizedKey] = value.toString().trim()
+    }
+
     val requiredSigningKeys = listOf("storePassword", "keyPassword", "keyAlias", "storeFile")
     val missingSigningKeys = requiredSigningKeys.filter {
         keystoreProperties.getProperty(it).isNullOrBlank()
@@ -67,10 +75,10 @@ android {
     signingConfigs {
         create("release") {
             if (hasReleaseSigning) {
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
             }
         }
     }
